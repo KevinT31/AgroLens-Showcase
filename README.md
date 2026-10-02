@@ -86,6 +86,10 @@ The platform has an implemented technical foundation and working development flo
 
 The private repository contains implementation code, environment contracts, infrastructure definitions and technical experiments. This public repository intentionally exposes only portfolio-safe architecture and product information.
 
+## More Documentation
+
+[Architecture notes](./docs/ARCHITECTURE.md)
+
 ---
 
 **Private source repository · Public AgroTech case study**
