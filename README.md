@@ -1,12 +1,22 @@
+<div align="center">
+
 # AgroLens
 
-> **Public project showcase.** The source code remains private while this repository documents the product, architecture and engineering scope.
+### Drones · Computer Vision · Edge AI · Agriculture
+
+**Public engineering showcase — source code remains private**
+
+[Architecture](./docs/ARCHITECTURE.md) · [Project status](./docs/STATUS.md)
+
+</div>
+
+---
 
 ## Overview
 
-**AgroLens** is an AgroTech platform for crop monitoring and disease-detection workflows using **drones, computer vision, edge processing and cloud-connected applications**.
+**AgroLens** is an AgroTech platform for crop monitoring and disease-detection workflows using drones, computer vision, edge processing and field applications.
 
-The system is designed around field operation: image acquisition, local/edge inference, model experimentation, operational APIs, dashboards and mobile tooling.
+The private project is organized as a multi-application system: DJI-assisted acquisition, local inference, model-training workspaces, an operational backend, a dashboard, a mobile field app and a Raspberry Pi station.
 
 ## Recognition
 
@@ -15,43 +25,45 @@ The system is designed around field operation: image acquisition, local/edge inf
 
 ## Problem
 
-Agricultural monitoring often depends on manual inspection and fragmented field data. AgroLens explores a workflow where aerial imagery and computer vision can support faster detection, traceability and agricultural decision-making.
+Agricultural inspection is often manual, intermittent and difficult to scale. AgroLens explores a workflow where aerial imagery and local AI can turn field observations into structured evidence and operational information.
 
-## Solution
-
-The private implementation is organized as a modular platform that includes:
-
-- DJI drone acquisition workflows
-- Computer-vision inference
-- Crop/model training workspace
-- Operational backend
-- Web dashboard
-- Mobile field application
-- Android pilot application
-- Raspberry Pi field station
-- Optional cloud storage for evidence and backups
-
-## Architecture
+## System Design
 
 ```mermaid
 flowchart LR
-    Drone[DJI Drone] --> Capture[Image Acquisition]
-    Capture --> Edge[Field / Edge Processing]
-    Edge --> AI[Computer Vision Inference]
+    Drone[DJI Drone] --> Acquisition[Image Acquisition]
+    Acquisition --> Edge[Field / Edge Processing]
+    Edge --> Inference[Computer Vision Inference]
 
     Station[Raspberry Pi Station] --> API[Operational Backend]
-    AI --> API
+    Inference --> API
 
-    API --> DB[PostgreSQL]
+    API --> DB[(PostgreSQL)]
     API --> Cache[Redis]
     API --> Messaging[MQTT]
-    API --> Storage[Object Storage]
+    API --> Storage[MinIO / Object Storage]
 
-    API --> Dashboard[Web Dashboard]
+    API --> Dashboard[React Dashboard]
     API --> Mobile[Field Mobile App]
 
-    Storage --> Cloud[Optional Cloud Backup]
+    Storage --> Cloud[Optional AWS S3 Backup]
 ```
+
+## Private Repository Structure
+
+The private monorepo contains separate projects for:
+
+- NestJS/Prisma backend
+- field agent
+- visual inference engine
+- crop/model training
+- React/Vite dashboard
+- Expo/React Native field app
+- Kotlin + DJI MSDK pilot app
+- Raspberry Pi station
+- public landing page
+
+This separation keeps training, inference, field hardware and product applications from collapsing into a single tightly coupled codebase.
 
 ## Technology
 
@@ -59,37 +71,37 @@ flowchart LR
 |---|---|
 | Backend | NestJS · Prisma |
 | Data | PostgreSQL · Redis |
-| AI / Vision | Python · Computer Vision · Model Training |
+| AI / Vision | Python · Computer Vision · model training |
 | Web | React · Vite |
 | Mobile | Expo · React Native |
 | Drone | Kotlin · DJI MSDK |
 | Edge | Raspberry Pi · Python |
 | Messaging | MQTT |
 | Infrastructure | Docker · MinIO |
-| Cloud | AWS S3 |
+| Cloud | AWS S3 integration path |
 
-## Engineering Highlights
+## Engineering Decisions
 
-- Edge-oriented processing for field environments
-- Separation between model training and operational inference
-- Shared backend serving dashboard and field applications
-- Raspberry Pi integration for independent field-station workflows
-- Dockerized development infrastructure
-- Cloud storage treated as an extension rather than a hard runtime dependency
-- Explicit testing and backlog documentation instead of presenting unfinished work as production-ready
+**Edge-first operation.** The architecture does not require every field action to depend on a remote cloud service.
 
-## Project Status
+**Training and inference are separated.** Model experimentation can evolve without turning the production inference path into a research notebook.
 
-The platform has an implemented technical foundation and working development flows, while hardware validation, production security and real-world datasets remain part of the broader validation roadmap.
+**Cloud storage is optional for heavy evidence/backups.** The local platform remains the primary operational core.
 
-## Repository Strategy
+**Status is explicit.** The private README states that the base compiles and core mocks work, while hardware, real datasets and production security still require further validation.
 
-The private repository contains implementation code, environment contracts, infrastructure definitions and technical experiments. This public repository intentionally exposes only portfolio-safe architecture and product information.
+## Current Status
 
-## More Documentation
+The software foundation and principal mocked development flows are implemented. The project is **not presented as production-certified**. Hardware validation, real datasets/models and production-grade security remain part of the roadmap.
 
-[Architecture notes](./docs/ARCHITECTURE.md)
+[See the explicit status matrix →](./docs/STATUS.md)
+
+## Why the Source Is Private
+
+The implementation repository contains infrastructure, environment contracts, model workspaces and product code that are not appropriate for a public portfolio.
 
 ---
 
-**Private source repository · Public AgroTech case study**
+### What this project demonstrates
+
+**Computer vision · edge/cloud architecture · drones · mobile/web systems · backend design · field-oriented engineering**
