@@ -1,36 +1,64 @@
-# AgroLens — Architecture Notes
+# AgroLens — Architecture
 
-## System Boundaries
+## 1. Architectural Goal
 
-AgroLens is organized around four technical zones:
+AgroLens is designed around field constraints: data acquisition may happen away from reliable connectivity, imagery is heavy, AI inference has different requirements from model training, and users need both technical and operational interfaces.
 
-1. **Acquisition** — drone and field data.
-2. **Edge / AI** — inference and local processing.
-3. **Platform** — backend, database and messaging.
-4. **Clients** — dashboard and field applications.
+## 2. Functional Layers
 
-## Logical Flow
+### Acquisition
+
+DJI-oriented acquisition workflows capture field imagery.
+
+### Edge / field processing
+
+Field components prepare data for inference and can operate independently of a permanent cloud connection.
+
+### AI inference
+
+The inference runtime is separated from the crop/model training workspace.
+
+### Platform backend
+
+The operational backend provides API and data services to multiple clients.
+
+### Clients
+
+- web dashboard
+- mobile field application
+- technical Android/DJI pilot
+- Raspberry Pi station
+
+## 3. Diagram
 
 ```mermaid
 flowchart TB
-    Drone[DJI Drone] --> Acquire[Acquisition]
-    Acquire --> Vision[Computer Vision]
-    Station[Raspberry Pi] --> Platform[Backend Platform]
-    Vision --> Platform
+    Drone --> Capture
+    Capture --> Edge
+    Edge --> Inference
+    Training[Training Workspace] -. model artifacts .-> Inference
 
-    Platform --> DB[PostgreSQL]
-    Platform --> Redis[Redis]
-    Platform --> MQTT[MQTT]
-    Platform --> Store[Object Storage]
+    Inference --> Backend
+    Pi[Raspberry Pi] --> Backend
 
-    Platform --> Web[Dashboard]
-    Platform --> Mobile[Field App]
+    Backend --> Postgres[(PostgreSQL)]
+    Backend --> Redis
+    Backend --> MQTT
+    Backend --> MinIO
+
+    Backend --> Dashboard
+    Backend --> FieldApp
+    MinIO --> S3[Optional S3]
 ```
 
-## Design Considerations
+## 4. Design Principles
 
-- Field operation should not depend entirely on remote cloud services.
-- Model training is separated from production inference.
-- Backend contracts support multiple client applications.
-- Heavy media/evidence can be stored outside the core transactional path.
-- Hardware and real-dataset validation are tracked separately from software completeness.
+- Keep inference separate from training.
+- Prefer local/edge continuity when connectivity is weak.
+- Centralize contracts through the backend rather than coupling clients directly to storage.
+- Treat large image evidence differently from transactional data.
+- Keep hardware validation separate from software completeness claims.
+
+## 5. Development Infrastructure
+
+The private repository uses Docker-based local infrastructure and separates development/production compose overlays. Production-oriented configuration requires real secrets and hardened settings; development placeholders are not treated as deployable production configuration.
